@@ -92,3 +92,23 @@ variable "nsg_name" {
   type        = string
   description = "Nome do NSG da arquitetura proposta"
 }
+
+variable "rule_allow_rdp_name" {
+  type        = string
+  description = "Nome da regra que libera o acesso RDP ao ambiente"
+}
+
+variable "rule_allow_rdp_priority" {
+  type        = number
+  description = "Prioridade da regra que permite o acesso RDP ao ambiente"
+}
+
+variable "rule_allow_rdp_source_port_range" {
+  type        = any
+  description = "Range de portas de origem da regra que permite o acesso RDP"
+}
+
+variable "rule_allow_rdp_source_address_prefix" {
+  type        = string
+  description = "Endereço de IP de origem da regra que permite o acesso RDP"
+}
