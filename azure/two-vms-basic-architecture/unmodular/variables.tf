@@ -89,6 +89,6 @@ variable "pip_windows_name" {
 }
 
 variable "nsg_name" {
-  type = string
+  type        = string
   description = "Nome do NSG da arquitetura proposta"
 }
