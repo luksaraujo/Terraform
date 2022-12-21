@@ -25,6 +25,7 @@ resource "azurerm_network_interface" "nic_vm_linux" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.pip_linux.id
   }
 }
 
@@ -36,6 +37,7 @@ resource "azurerm_network_interface" "nic_vm_windows" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.pip_windows.id
   }
 }
 
@@ -78,4 +80,24 @@ resource "azurerm_linux_virtual_machine" "vm_linux" {
     sku       = "16.04-LTS"
     version   = "latest"
   }
+}
+
+resource "azurerm_public_ip" "pip_linux" {
+  name                = var.pip_linux_name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  allocation_method   = "Static"
+}
+
+resource "azurerm_public_ip" "pip_windows" {
+  name                = var.pip_windows_name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  allocation_method   = "Dynamic"
+}
+
+resource "azurerm_network_security_group" "nsg" {
+  name                = var.nsg_name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 }

@@ -77,3 +77,18 @@ variable "vm_windows_admin_password" {
   type        = string
   description = "Senha do admin da VM Windows"
 }
+
+variable "pip_linux_name" {
+  type        = string
+  description = "Nome do Public IP da máquina Linux"
+}
+
+variable "pip_windows_name" {
+  type        = string
+  description = "Nome do Public IP da máquina Windows"
+}
+
+variable "nsg_name" {
+  type = string
+  description = "Nome do NSG da arquitetura proposta"
+}
