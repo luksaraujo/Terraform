@@ -102,7 +102,11 @@ resource "azurerm_network_security_group" "nsg_rdp" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-
+resource "azurerm_network_security_group" "nsg_ssh" {
+  name                = var.nsg_ssh_name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
 
 resource "azurerm_network_interface_security_group_association" "nsg_assoc_rdp" {
   network_interface_id      = azurerm_network_interface.nic_vm_windows.id
