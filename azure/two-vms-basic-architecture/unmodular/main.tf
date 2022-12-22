@@ -131,3 +131,17 @@ resource "azurerm_network_security_rule" "nsg_rule_rdp_allow" {
   source_address_prefix       = var.rule_allow_rdp_source_address_prefix
   destination_address_prefix  = "*"
 }
+
+resource "azurerm_network_security_rule" "nsg_rule_ssh_allow" {
+  name                        = var.rule_allow_ssh_name
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.nsg_ssh.name
+  priority                    = var.rule_allow_ssh_priority
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = var.rule_allow_ssh_source_port_range
+  destination_port_range      = 22
+  source_address_prefix       = var.rule_allow_ssh_source_address_prefix
+  destination_address_prefix  = "*"
+}
