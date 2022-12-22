@@ -113,6 +113,11 @@ resource "azurerm_network_interface_security_group_association" "nsg_assoc_rdp" 
   network_security_group_id = azurerm_network_security_group.nsg_rdp.id
 }
 
+resource "azurerm_network_interface_security_group_association" "nsg_assoc_ssh" {
+  network_interface_id      = azurerm_network_interface.nic_vm_linux.id
+  network_security_group_id = azurerm_network_security_group.nsg_ssh.id
+}
+
 resource "azurerm_network_security_rule" "nsg_rule_rdp_allow" {
   name                        = var.rule_allow_rdp_name
   resource_group_name         = azurerm_resource_group.rg.name
