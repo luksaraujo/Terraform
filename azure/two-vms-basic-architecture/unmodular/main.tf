@@ -96,27 +96,29 @@ resource "azurerm_public_ip" "pip_windows" {
   allocation_method   = "Dynamic"
 }
 
-resource "azurerm_network_security_group" "nsg" {
-  name                = var.nsg_name
+resource "azurerm_network_security_group" "nsg_rdp" {
+  name                = var.nsg_rdp_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-resource "azurerm_subnet_network_security_group_association" "nsgassoc01" {
-  subnet_id                 = azurerm_subnet.subnet.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
+
+
+resource "azurerm_network_interface_security_group_association" "nsg_assoc_rdp" {
+  network_interface_id      = azurerm_network_interface.nic_vm_windows.id
+  network_security_group_id = azurerm_network_security_group.nsg_rdp.id
 }
 
 resource "azurerm_network_security_rule" "nsg_rule_rdp_allow" {
-  name                         = var.rule_allow_rdp_name
-  resource_group_name          = azurerm_resource_group.rg.name
-  network_security_group_name  = azurerm_network_security_group.nsg.name
-  priority                     = var.rule_allow_rdp_priority
-  direction                    = "Inbound"
-  access                       = "Allow"
-  protocol                     = "Tcp"
-  source_port_range            = var.rule_allow_rdp_source_port_range
-  destination_port_range       = 3389
-  source_address_prefix        = var.rule_allow_rdp_source_address_prefix
-  destination_address_prefix   = "*"
+  name                        = var.rule_allow_rdp_name
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.nsg_rdp.name
+  priority                    = var.rule_allow_rdp_priority
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = var.rule_allow_rdp_source_port_range
+  destination_port_range      = 3389
+  source_address_prefix       = var.rule_allow_rdp_source_address_prefix
+  destination_address_prefix  = "*"
 }

@@ -88,7 +88,7 @@ variable "pip_windows_name" {
   description = "Nome do Public IP da máquina Windows"
 }
 
-variable "nsg_name" {
+variable "nsg_rdp_name" {
   type        = string
   description = "Nome do NSG da arquitetura proposta"
 }
