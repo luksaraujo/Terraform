@@ -80,6 +80,10 @@ resource "azurerm_linux_virtual_machine" "vm_linux" {
     sku       = "16.04-LTS"
     version   = "latest"
   }
+  admin_ssh_key {
+    username   = var.vm_linux_admin_username
+    public_key = file("/.ssh/id_rsa.pub")
+  }
 }
 
 resource "azurerm_public_ip" "pip_linux" {
