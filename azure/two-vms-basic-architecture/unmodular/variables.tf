@@ -112,3 +112,28 @@ variable "rule_allow_rdp_source_address_prefix" {
   type        = string
   description = "Endereço de IP de origem da regra que permite o acesso RDP"
 }
+
+variable "nsg_ssh_name" {
+  type        = string
+  description = "Nome do NSG que liberará a porta SSH"
+}
+
+variable "rule_allow_ssh_name" {
+  type        = string
+  description = "Nome da regra do NSG que libera a porta SSH"
+}
+
+variable "rule_allow_ssh_priority" {
+  type        = number
+  description = "Prioridade da regra que libera o acesso ao SSH"
+}
+
+variable "rule_allow_ssh_source_port_range" {
+  type        = any
+  description = "Range de portas de origem da regra que permite o acesso SSH"
+}
+
+variable "rule_allow_ssh_source_address_prefix" {
+  type        = string
+  description = "Endereço de IP de origem da regra que permite o acesso SSH"
+}
