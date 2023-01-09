@@ -9,6 +9,7 @@ resource "azurerm_virtual_network" "vnet" {
   location            = data.azurerm_resource_group.rg.location
   address_space       = [each.value.address_space]
   dns_servers         = [lookup(each.value, "dns_servers", null)]
+  tags                = lookup(each.value, "tags", data.azurerm_resource_group.rg.tags)
   dynamic "subnet" {
     for_each = lookup(each.value, "subnet", {}) != {} ? [1] : []
     content {
