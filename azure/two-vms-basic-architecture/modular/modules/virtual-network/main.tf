@@ -19,6 +19,7 @@ resource "azurerm_subnet" "snet" {
   address_prefixes     = [each.value.address_prefix]
   virtual_network_name = azurerm_virtual_network.vnet.name
   service_endpoints    = lookup(each.value, "service_endpoints", null)
+  depends_on           = [azurerm_virtual_network.vnet]
   dynamic "delegation" {
     for_each = lookup(each.value, "delegation", {}) != {} ? [1] : []
     content {
@@ -29,5 +30,4 @@ resource "azurerm_subnet" "snet" {
       }
     }
   }
-  depends_on = [azurerm_virtual_network.vnet]
 }
