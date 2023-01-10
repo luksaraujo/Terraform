@@ -18,3 +18,8 @@ variable "dns_servers" {
   description = "DNS Servers da VNet"
   default     = null
 }
+
+variable "subnets" {
+  type        = any
+  description = "Subnets da VNet"
+}
