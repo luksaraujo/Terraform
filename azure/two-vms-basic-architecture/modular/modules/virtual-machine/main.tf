@@ -82,7 +82,7 @@ resource "azurerm_linux_virtual_machine" "vm-linux-sequencial" {
 resource "azurerm_network_interface" "nic-dinamico" {
   for_each            = { for k, v in var.vms_dynamic : k => v if var.estrategia_de_implementacao == "dinamico" && var.vms_dynamic != {} }
   name                = join("-", [each.key, "nic"])
-  location            = lookup(each.value, "location", data.azurerm_resource_group.rg.location)
+  location            = lookup(each.value, "nic_location", data.azurerm_resource_group.rg.location)
   resource_group_name = data.azurerm_resource_group.rg.name
   depends_on          = [data.azurerm_subnet.subnet]
   ip_configuration {
@@ -91,5 +91,28 @@ resource "azurerm_network_interface" "nic-dinamico" {
     private_ip_address_version    = lookup(each.value, "private_ip_version", var.nic_private_ip_address_version)
     private_ip_address_allocation = lookup(each.value, "private_ip_allocation", var.nic_private_ip_address_allocation)
     private_ip_address            = lookup(each.value, "private_ip_allocation", var.nic_private_ip_address_allocation) == "Static" ? each.value.nic_private_ip_address : null
+  }
+}
+
+// A CRIAÇÃO DAS VMs WINDOWS OCORRE DE MANEIRA DINÂMICA, UTILIZANDO FOR_EACH
+resource "azurerm_windows_virtual_machine" "vm-windows-dinamico" {
+  for_each              = { for k, v in var.vms_dynamic : k => v if var.estrategia_de_implementacao == "dinamico" && var.vms_dynamic != {} && var.os_vms == "Windows" }
+  name                  = each.key
+  resource_group_name   = data.azurerm_resource_group.rg.name
+  location              = lookup(each.value, "location", data.azurerm_resource_group.rg.location)
+  size                  = each.value.size
+  admin_username        = each.value.admin_username
+  admin_password        = each.value.admin_password
+  network_interface_ids = [azurerm_network_interface.nic-dinamico[each.key].id]
+  depends_on            = [azurerm_network_interface.nic-dinamico]
+  os_disk {
+    caching              = lookup(each.value, "os_disk_caching", "ReadWrite")
+    storage_account_type = lookup(each.value, "os_disk_storage_acct_type", "Standard_LRS")
+  }
+  source_image_reference {
+    publisher = lookup(each.value, "os_image_publisher", "MicrosoftWindowsServer")
+    offer     = lookup(each.value, "os_image_offer", "WindowsServer")
+    sku       = lookup(each.value, "os_image_sku", "2019-Datacenter")
+    version   = lookup(each.value, "os_image_version", "latest")
   }
 }

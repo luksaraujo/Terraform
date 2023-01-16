@@ -1,4 +1,4 @@
-/*module "vm-windows-sequencial" {
+module "vm-windows-sequencial" {
   source                        = "./modules/virtual-machine"
   resource_group_name           = azurerm_resource_group.rg-01.name
   estrategia_de_implementacao   = "sequencial"
@@ -46,7 +46,7 @@ module "vm-linux-sequencial" {
     sku       = "16.04-LTS"
     version   = "latest"
   }
-}*/
+}
 
 module "vm-windows-dinamico" {
   source                      = "./modules/virtual-machine"
@@ -54,9 +54,10 @@ module "vm-windows-dinamico" {
   estrategia_de_implementacao = "dinamico"
   vnet_name                   = module.vnet.vnet_name
   subnet_name                 = "lab-lucas-souza-tf-simple-infra-sn01"
+  os_vms                      = "Windows"
   depends_on                  = [module.vnet]
   vms_dynamic = {
-    "vm-frontend" = {},
-    "vm-backend"  = {}
+    "vm-frontend" = { size = "Standard_B1ms", admin_username = "lukita", admin_password = var.admin_password },
+    "vm-backend"  = { size = "Standard_DS1_v2", admin_username = "lucas", admin_password = var.admin_password }
   }
 }

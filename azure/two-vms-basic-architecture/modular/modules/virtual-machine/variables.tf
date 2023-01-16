@@ -52,7 +52,6 @@ variable "nic_private_ip_address" {
 variable "os_vms" {
   type        = string
   description = "Sistema operacional que será instalado na(s) VM(s). Aceita: 'Windows' e 'Linux'."
-  default     = null
 }
 
 variable "vm_size" {
