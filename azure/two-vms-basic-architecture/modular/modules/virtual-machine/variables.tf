@@ -22,6 +22,7 @@ variable "sequencial_qtde_vms" {
 variable "sequencial_identical_vm_names" {
   type        = string
   description = "Nome das máquinas virtuais a serem implementadas de forma sequencial. O nome final será '[var.sequencial_identical_vm_names]-[index]'. Exemplo: vm-teste-01, vm-teste-02, etc."
+  default     = null
 }
 
 variable "nic_ip_configuration_name" {
@@ -51,26 +52,31 @@ variable "nic_private_ip_address" {
 variable "os_vms" {
   type        = string
   description = "Sistema operacional que será instalado na(s) VM(s). Aceita: 'Windows' e 'Linux'."
+  default     = null
 }
 
 variable "vm_size" {
   type        = string
   description = "Tamanho da(s) VM(s) que será(ão) criada(s)"
+  default     = null
 }
 
 variable "admin_username" {
   type        = string
   description = "Nome de usuário do adminsitrador das máquinas"
+  default     = null
 }
 
 variable "os_disk_source_image_reference" {
   type        = any
   description = "Informações sobre a imagem do sistema operacional da VM"
+  default     = null
 }
 
 variable "os_disk" {
   type        = any
   description = "Informações do OS Disk da VM"
+  default     = null
 }
 
 variable "disable_password_authentication" {
@@ -94,4 +100,10 @@ variable "ssh_public_key" {
 variable "subnet_name" {
   type        = string
   description = "Nome da Subnet onde as VMs serão criadas."
+}
+
+variable "vms_dynamic" {
+  type        = map(map(string))
+  default     = {}
+  description = "Mapa com os valores correspondentes às VMs que serão implementadas na estratégia de implementação dinâmica"
 }

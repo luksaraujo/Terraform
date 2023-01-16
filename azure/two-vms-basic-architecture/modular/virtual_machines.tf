@@ -1,4 +1,4 @@
-module "vm-windows" {
+/*module "vm-windows-sequencial" {
   source                        = "./modules/virtual-machine"
   resource_group_name           = azurerm_resource_group.rg-01.name
   estrategia_de_implementacao   = "sequencial"
@@ -23,7 +23,7 @@ module "vm-windows" {
   }
 }
 
-module "vm-linux" {
+module "vm-linux-sequencial" {
   source                        = "./modules/virtual-machine"
   resource_group_name           = azurerm_resource_group.rg-01.name
   estrategia_de_implementacao   = "sequencial"
@@ -45,5 +45,18 @@ module "vm-linux" {
     offer     = "UbuntuServer"
     sku       = "16.04-LTS"
     version   = "latest"
+  }
+}*/
+
+module "vm-windows-dinamico" {
+  source                      = "./modules/virtual-machine"
+  resource_group_name         = azurerm_resource_group.rg-01.name
+  estrategia_de_implementacao = "dinamico"
+  vnet_name                   = module.vnet.vnet_name
+  subnet_name                 = "lab-lucas-souza-tf-simple-infra-sn01"
+  depends_on                  = [module.vnet]
+  vms_dynamic = {
+    "vm-frontend" = {},
+    "vm-backend"  = {}
   }
 }

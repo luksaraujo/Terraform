@@ -77,3 +77,19 @@ resource "azurerm_linux_virtual_machine" "vm-linux-sequencial" {
     version   = var.os_disk_source_image_reference["version"]
   }
 }
+
+// A CRIAÇÃO DAS NICs OCORRE DE MANEIRA DINÂMICA, INDEPENDENTEMENTE DO SISTEMA OPERACIONAL DAS VMs
+resource "azurerm_network_interface" "nic-dinamico" {
+  for_each            = { for k, v in var.vms_dynamic : k => v if var.estrategia_de_implementacao == "dinamico" && var.vms_dynamic != {} }
+  name                = join("-", [each.key, "nic"])
+  location            = lookup(each.value, "location", data.azurerm_resource_group.rg.location)
+  resource_group_name = data.azurerm_resource_group.rg.name
+  depends_on          = [data.azurerm_subnet.subnet]
+  ip_configuration {
+    name                          = var.nic_ip_configuration_name
+    subnet_id                     = data.azurerm_subnet.subnet.id
+    private_ip_address_version    = lookup(each.value, "private_ip_version", var.nic_private_ip_address_version)
+    private_ip_address_allocation = lookup(each.value, "private_ip_allocation", var.nic_private_ip_address_allocation)
+    private_ip_address            = lookup(each.value, "private_ip_allocation", var.nic_private_ip_address_allocation) == "Static" ? each.value.nic_private_ip_address : null
+  }
+}
