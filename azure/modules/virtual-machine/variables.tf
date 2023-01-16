@@ -10,7 +10,7 @@ variable "vnet_name" {
 
 variable "estrategia_de_implementacao" {
   type        = string
-  description = "Variável que armazena a estratégia de implementação das VMs. Aceita os valores 'sequencial' e 'personalizado'."
+  description = "Variável que armazena a estratégia de implementação das VMs. Aceita os valores 'sequencial' e 'dinamico'."
 }
 
 variable "sequencial_qtde_vms" {
@@ -86,8 +86,7 @@ variable "disable_password_authentication" {
 
 variable "admin_password" {
   type        = string
-  description = "Senha do administrador da máquina virtual"
-  default     = null
+  description = "Senha do administrador da máquina virtual. Sempre requerido, uma vez que o módulo não suporta SSH KEYS para Linux"
 }
 
 variable "ssh_public_key" {
