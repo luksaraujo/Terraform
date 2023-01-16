@@ -116,3 +116,27 @@ resource "azurerm_windows_virtual_machine" "vm-windows-dinamico" {
     version   = lookup(each.value, "os_image_version", "latest")
   }
 }
+
+// A CRIAÇÃO DAS VMs LINUX OCORRE DE MANEIRA DINÂMICA, UTILIZANDO FOR_EACH
+resource "azurerm_linux_virtual_machine" "vm-linux-dinamico" {
+  for_each              = { for k, v in var.vms_dynamic : k => v if var.estrategia_de_implementacao == "dinamico" && var.vms_dynamic != {} && var.os_vms == "Linux" }
+  name                  = each.key
+  resource_group_name   = data.azurerm_resource_group.rg.name
+  location              = lookup(each.value, "location", data.azurerm_resource_group.rg.location)
+  size                  = each.value.size
+  admin_username        = each.value.admin_username
+  admin_password        = each.value.admin_password
+  network_interface_ids = [azurerm_network_interface.nic-dinamico[each.key].id]
+  depends_on            = [azurerm_network_interface.nic-dinamico]
+  disable_password_authentication = var.disable_password_authentication
+  os_disk {
+    caching              = lookup(each.value, "os_disk_caching", "ReadWrite")
+    storage_account_type = lookup(each.value, "os_disk_storage_acct_type", "Standard_LRS")
+  }
+  source_image_reference {
+    publisher = lookup(each.value, "os_image_publisher", "Canonical")
+    offer     = lookup(each.value, "os_image_offer", "UbuntuServer")
+    sku       = lookup(each.value, "os_image_sku", "16.04-LTS")
+    version   = lookup(each.value, "os_image_version", "latest")
+  }
+}
