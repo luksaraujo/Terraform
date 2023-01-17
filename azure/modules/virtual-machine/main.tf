@@ -91,6 +91,7 @@ resource "azurerm_network_interface" "nic-dinamico" {
     private_ip_address_version    = lookup(each.value, "private_ip_version", var.nic_private_ip_address_version)
     private_ip_address_allocation = lookup(each.value, "private_ip_allocation", var.nic_private_ip_address_allocation)
     private_ip_address            = lookup(each.value, "private_ip_allocation", var.nic_private_ip_address_allocation) == "Static" ? each.value.nic_private_ip_address : null
+    public_ip_address_id          = lookup(each.value, "public_ip_id", null)
   }
 }
 
