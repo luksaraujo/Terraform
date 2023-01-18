@@ -84,14 +84,23 @@ resource "azurerm_network_interface" "nic-dinamico" {
   name                = join("-", [each.key, "nic"])
   location            = lookup(each.value, "nic_location", data.azurerm_resource_group.rg.location)
   resource_group_name = data.azurerm_resource_group.rg.name
-  depends_on          = [data.azurerm_subnet.subnet]
+  depends_on          = [data.azurerm_subnet.subnet, data.azurerm_public_ip.pip-windows]
   ip_configuration {
     name                          = var.nic_ip_configuration_name
     subnet_id                     = data.azurerm_subnet.subnet.id
     private_ip_address_version    = lookup(each.value, "private_ip_version", var.nic_private_ip_address_version)
     private_ip_address_allocation = lookup(each.value, "private_ip_allocation", var.nic_private_ip_address_allocation)
     private_ip_address            = lookup(each.value, "private_ip_allocation", var.nic_private_ip_address_allocation) == "Static" ? each.value.nic_private_ip_address : null
+    public_ip_address_id          = lookup(each.value, "public_ip", false) == true ? data.azurerm_public_ip.pip-windows[join("-", [each.key, "pip"])].id : null
   }
+}
+
+// A CRIAÇÃO DOS PUBLIC IPs ACONTECE QUANDO AS VMS SÃO CRIADAS DE MANEIRA DINÂMICA E COM O SO WINDOWS
+data "azurerm_public_ip" "pip-windows"{
+  for_each = { for k, v in var.vms_dynamic : k => v if var.estrategia_de_implementacao == "dinamico" && var.vms_dynamic != {} && var.os_vms == "Windows" }
+  name = join("-", [each.key, "pip"])
+  resource_group_name = data.azurerm_resource_group.rg.name
+  depends_on = [data.azurerm_resource_group.rg]
 }
 
 // A CRIAÇÃO DAS VMs WINDOWS OCORRE DE MANEIRA DINÂMICA, UTILIZANDO FOR_EACH
