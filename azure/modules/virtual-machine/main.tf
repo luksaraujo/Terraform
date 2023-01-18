@@ -95,6 +95,7 @@ resource "azurerm_network_interface" "nic-dinamico" {
   }
 }
 
+// A CRIAÇÃO DOS PUBLIC IPs ACONTECE QUANDO AS VMS SÃO CRIADAS DE MANEIRA DINÂMICA E COM O SO WINDOWS
 data "azurerm_public_ip" "pip-windows"{
   for_each = { for k, v in var.vms_dynamic : k => v if var.estrategia_de_implementacao == "dinamico" && var.vms_dynamic != {} && var.os_vms == "Windows" }
   name = join("-", [each.key, "pip"])
