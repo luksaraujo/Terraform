@@ -87,6 +87,7 @@ variable "disable_password_authentication" {
 variable "admin_password" {
   type        = string
   description = "Senha do administrador da máquina virtual. Sempre requerido, uma vez que o módulo não suporta SSH KEYS para Linux"
+  default     = null
 }
 
 variable "ssh_public_key" {
@@ -104,4 +105,10 @@ variable "vms_dynamic" {
   type        = map(map(string))
   default     = {}
   description = "Mapa com os valores correspondentes às VMs que serão implementadas na estratégia de implementação dinâmica"
+}
+
+variable "pip_name" {
+  type = string
+  description = "Nome do Public IP que será attachado nas máquinas quando aplicável"
+  default = null
 }
