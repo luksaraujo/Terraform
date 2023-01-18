@@ -84,14 +84,14 @@ resource "azurerm_network_interface" "nic-dinamico" {
   name                = join("-", [each.key, "nic"])
   location            = lookup(each.value, "nic_location", data.azurerm_resource_group.rg.location)
   resource_group_name = data.azurerm_resource_group.rg.name
-  depends_on          = [data.azurerm_subnet.subnet, data.azurerm_public_ip.pip-windows]
+  depends_on          = [data.azurerm_subnet.subnet, data.azurerm_public_ip.pip-windows, data.azurerm_public_ip.pip-linux]
   ip_configuration {
     name                          = var.nic_ip_configuration_name
     subnet_id                     = data.azurerm_subnet.subnet.id
     private_ip_address_version    = lookup(each.value, "private_ip_version", var.nic_private_ip_address_version)
     private_ip_address_allocation = lookup(each.value, "private_ip_allocation", var.nic_private_ip_address_allocation)
     private_ip_address            = lookup(each.value, "private_ip_allocation", var.nic_private_ip_address_allocation) == "Static" ? each.value.nic_private_ip_address : null
-    public_ip_address_id          = lookup(each.value, "public_ip", false) == true ? data.azurerm_public_ip.pip-windows[join("-", [each.key, "pip"])].id : null
+    public_ip_address_id          = lookup(each.value, "public_ip", false) == true ? (var.os_vms == "Windows" ? data.azurerm_public_ip.pip-windows[join("-", [each.key, "pip"])].id : (var.os_vms == "Linux" ? data.azurerm_public_ip.pip-linux[join("-", [each.key, "pip"])].id : null)) : null
   }
 }
 
@@ -124,6 +124,14 @@ resource "azurerm_windows_virtual_machine" "vm-windows-dinamico" {
     sku       = lookup(each.value, "os_image_sku", "2019-Datacenter")
     version   = lookup(each.value, "os_image_version", "latest")
   }
+}
+
+// A CRIAÇÃO DOS PUBLIC IPs ACONTECE QUANDO AS VMS SÃO CRIADAS DE MANEIRA DINÂMICA E COM O SO LINUX
+data "azurerm_public_ip" "pip-linux"{
+  for_each = { for k, v in var.vms_dynamic : k => v if var.estrategia_de_implementacao == "dinamico" && var.vms_dynamic != {} && var.os_vms == "Linux" }
+  name = join("-", [each.key, "pip"])
+  resource_group_name = data.azurerm_resource_group.rg.name
+  depends_on = [data.azurerm_resource_group.rg]
 }
 
 // A CRIAÇÃO DAS VMs LINUX OCORRE DE MANEIRA DINÂMICA, UTILIZANDO FOR_EACH
