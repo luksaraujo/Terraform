@@ -5,10 +5,9 @@ module "vm-windows-dinamico" {
   vnet_name                   = module.vnet.vnet_name
   subnet_name                 = "lab-lucas-souza-tf-simple-infra-sn01"
   os_vms                      = "Windows"
-  depends_on                  = [module.vnet]
-  vms_dynamic = {
-    "vm-windows-01" = { size = "Standard_B1ms", admin_username = "lukita", admin_password = var.admin_password }
-  }
+  depends_on                  = [module.vnet, module.public-ips-windows]
+  vms_dynamic                 = var.vms_windows
+  
 }
 
 module "vm-linux-dinamico" {
@@ -19,7 +18,14 @@ module "vm-linux-dinamico" {
   subnet_name                 = "lab-lucas-souza-tf-simple-infra-sn01"
   os_vms                      = "Linux"
   depends_on                  = [module.vnet]
-  vms_dynamic = {
-    "vm-linux-01" = { size = "Standard_B1ms", admin_username = "lukita", admin_password = var.admin_password }
-  }
+  vms_dynamic                 = var.vms_linux
+}
+
+module "public-ips-windows" {
+  source                = "../../modules/public-ip"
+  for_each              = var.vms_windows
+  pip_name              = join("-", [each.key, "pip"])
+  resource_group_name   = azurerm_resource_group.rg-01.name
+  pip_allocation_method = "Static"
+  depends_on = [azurerm_resource_group.rg-01]
 }

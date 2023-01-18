@@ -8,7 +8,12 @@ variable "rg_location" {
   description = "Nome da localização onde o Resource Group será criado"
 }
 
-variable "admin_password" {
-  type        = string
-  description = "Senha do administrador das máquinas"
+variable "vms_windows" {
+  type        = map(map(any))
+  description = "Máquinas virtuais Windows a serem criadas"
+}
+
+variable "vms_linux" {
+  type        = map(map(any))
+  description = "Máquinas virtuais Linux a serem criadas"
 }
