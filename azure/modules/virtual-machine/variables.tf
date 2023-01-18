@@ -106,3 +106,9 @@ variable "vms_dynamic" {
   default     = {}
   description = "Mapa com os valores correspondentes às VMs que serão implementadas na estratégia de implementação dinâmica"
 }
+
+variable "pip_name" {
+  type = string
+  description = "Nome do Public IP que será attachado nas máquinas quando aplicável"
+  default = null
+}
